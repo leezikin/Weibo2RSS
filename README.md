@@ -1,6 +1,13 @@
 # Weibo2RSS
 
-> 使用RSS订阅喜欢的微博博主
+> 使用RSS订阅喜欢的微博博主，更新微博邮件提醒，并使用咕咕机打印。
+
+## Install
+
+硬件环境：RaspberryPi B+，MEMOBIRD 2
+软件环境：Nodejs，MySQL
+
+请在 `routes/config.js` 下填写您的数据库配置与邮箱配置。
 
 ## 介绍
 
@@ -30,3 +37,5 @@ Demo：https://api.prprpr.me/weibo/negative/3306934123
 ## LICENSE
 
 MIT © [DIYgod](http://github.com/DIYgod)
+
+MIT © [Airing](http://github.com/airingursb)

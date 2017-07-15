@@ -2,7 +2,18 @@ var fetch = require('node-fetch');
 var cheerio = require('cheerio');
 var url = require('url');
 var logger = require('../tools/logger');
-// var redis = require('../tools/redis');
+var WeiboModel = require('../models/index').Weibo;
+var email = require('emailjs/email');
+var EMAIL_USER = require('./config').EMAIL_USER;
+var EMAIL_PASSWORD = require('./config').EMAIL_PASSWORD;
+var EMAIL_HOST = require('./config').EMAIL_HOST;
+
+var server  = email.server.connect({
+   user: EMAIL_USER, 
+   password: EMAIL_PASSWORD, 
+   host: EMAIL_HOST, 
+   ssl: true
+});
 
 function getTime (html) {
     var math;
@@ -70,18 +81,41 @@ module.exports = function (req, res) {
                     wbs[i].emotion = data.positive - data.negative;
 
                     if (emotionCound === wbs.length) {
+                        wbs.forEach(function(wb) {
+                            WeiboModel.find({
+                                where: {
+                                    link: wb.link
+                                }
+                            }).then(function(result) {
+                                console.log(result)
+                                if (result == null) {
+                                    wb.uid = uid;
+                                    wb.home = 'http://weibo.com/' + uid;
+                                    wb.name = name;
+                                    WeiboModel.create(wb).then(function() {
+                                        var subject = wb.name + '发布了新微博，情绪值为：' + (wb.emotion * 100).toFixed(4) + '%，快去看看吧！'
+                                        server.send({
+                                           text:    wb.description, 
+                                           from:    "gx-deng <gx-deng@163.com>", 
+                                           to:      "airing <361411192@qq.com>",
+                                           subject: subject
+                                        }, function(err, message) { console.log(err || message); });
+                                    });
+                                }
+                            });
+                        });
                         var rss =
 `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 <channel>
-<title>${name}的消极情绪微博</title>
+<title>${name}的情绪微博</title>
 <link>http://weibo.com/${uid}/</link>
 <description>${name}的消极情绪微博RSS，使用 Weibo2RSS(https://github.com/DIYgod/Weibo2RSS) 构建</description>
 <language>zh-cn</language>
 <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 <ttl>300</ttl>`
                         for (let j = 0; j < wbs.length; j++) {
-                            if (wbs[j].emotion < 0) {
+                            if (wbs[j].emotion) {
                                 rss +=`
 <item>
     <title><![CDATA[你关注的博主@${name} 发布了情绪值为${(wbs[j].emotion * 100).toFixed(4)}%的疑似消极情绪微博，快去关心一下吧：「${wbs[j].title}」]]></title>
