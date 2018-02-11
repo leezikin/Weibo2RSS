@@ -42,18 +42,23 @@ module.exports = function (req, res) {
 
                 wb.pubDate = item.find('.media-body div p:first-of-type').html();
                 wb.link = item.find('.media-body div p a:first-of-type').attr('href');
-              //  wb.imgs = [];
+                // wb.imgs = [];
                 imgs = item.find('.img-single');
                  imgs.map(function (index,ele) {
                      img = $(this);
                      img = img.attr('src');//获取图片
                      img = img.replace(/orj360/g,'large')
-                    // wb.imgs.push(img);
+                     // wb.imgs.push(img);
                      //logger.info(img);
-                     wb.img = img;
-                     wbs.push(wb);
+                     wb.description += '<br><img src="' + img + '"></img>';
+
                  });
-               // wbs.push(wb);
+                 //logger.info(wb.imgs.length);
+                 // for(var i = 0;i < wb.imgs.length;i++){
+                 //     wb.description += '<br><img src="' + wb.imgs[i] + '"></img>';
+                 // }
+                wbs.push(wb);
+
             });
             var name = $('.username').text().slice(0,-3);
 
@@ -71,8 +76,7 @@ module.exports = function (req, res) {
                 rss +=`
 <item>
     <title><![CDATA[${wbs[i].title}]]></title>
-    <description><![CDATA[${wbs[i].description}]]></description>
-    <image>${wbs[i].img}</image>`
+    <description><![CDATA[${wbs[i].description}]]></description>`
 
                 // for(var j = 0;j < wbs[i].imgs.length;j++){
                 //     rss +=`<img>${wbs[i].imgs[j]}</img>`
