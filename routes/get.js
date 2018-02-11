@@ -37,17 +37,18 @@ module.exports = function (req, res) {
                 wb.title = wb.title.replace(/\u0000|\u0001|\u0002|\u0003|\u0004|\u0005|\u0006|\u0007|\u0008|\u0009|\u000a|\u000b|\u000c|\u000d|\u000e|\u000f|\u0010|\u0011|\u0012|\u0013|\u0014|\u0015|\u0016|\u0017|\u0018|\u0019|\u001a|\u001b|\u001c|\u001d|\u001e|\u001f/g, '');
                 wb.pubDate = item.find('.media-body div p:first-of-type').html();
                 wb.link = item.find('.media-body div p a:first-of-type').attr('href');
-                wb.imgs = [];
+              //  wb.imgs = [];
                 imgs = item.find('.img-single');
                  imgs.map(function (index,ele) {
                      img = $(this);
                      img = img.attr('src');//获取图片
                      img = img.replace(/orj360/g,'large')
-                     wb.imgs.push(img);
+                    // wb.imgs.push(img);
                      //logger.info(img);
-                    // wb.img = img;
+                     wb.img = img;
+                     wbs.push(wb);
                  });
-                wbs.push(wb);
+               // wbs.push(wb);
             });
             var name = $('.username').text().slice(0,-3);
 
@@ -64,11 +65,12 @@ module.exports = function (req, res) {
             for (var i = 0; i < wbs.length; i++) {
                 rss +=`
 <item>
-    <title><![CDATA[${wbs[i].title}]]></title>`
+    <title><![CDATA[${wbs[i].title}]]></title>
+    <image>${wbs[i].img}</image>`
 
-                for(var j = 0;j < wbs[i].imgs.length;j++){
-                    rss +=`<img>${wbs[i].imgs[j]}</img>`
-                }
+                // for(var j = 0;j < wbs[i].imgs.length;j++){
+                //     rss +=`<img>${wbs[i].imgs[j]}</img>`
+                // }
 
                 rss +=`<pubDate>${wbs[i].pubDate}</pubDate>
     <guid>${wbs[i].link}</guid>
