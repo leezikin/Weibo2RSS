@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/airingursb/Weibo2RSS.git"
+    "url": "git+https://github.com/leezikin/Weibo2RSS.git"
   },
   "keywords": [
     "Weibo",
