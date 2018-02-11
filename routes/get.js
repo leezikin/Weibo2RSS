@@ -2,25 +2,7 @@ var fetch = require('node-fetch');
 var cheerio = require('cheerio');
 var url = require('url');
 var logger = require('../tools/logger');
-// var redis = require('../tools/redis');
 
-function getTime (html) {
-    var math;
-    var date = new Date();
-    if (math = /(\d+)分钟前/.exec(html)) {
-        date.setMinutes(date.getMinutes() - math[1]);
-        return date.toUTCString();
-    }
-    else if (math = /今天 (\d+):(\d+)/.exec(html)) {
-        date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), math[1], math[2]);
-        return date.toUTCString();
-    }
-    else if (math = /(\d+)月(\d+)日 (\d+):(\d+)/.exec(html)) {
-        date = new Date(date.getFullYear(), math[1] - 1, parseInt(math[2]), math[3], math[4]);
-        return date.toUTCString();
-    }
-    return html;
-}
 
 module.exports = function (req, res) {
     res.header('Content-Type', 'application/xml; charset=utf-8');
@@ -37,27 +19,33 @@ module.exports = function (req, res) {
 
     logger.info(`Weibo2RSS uid ${uid} form origin, IP: ${ip}`);
 
-    fetch(`http://service.weibo.com/widget/widget_blog.php?uid=${uid}`).then(
+    fetch(`http://www.weiboread.com/user/${uid}`).then(
         response => response.text()
     ).then((data) => {
             var $ = cheerio.load(data, {
                 decodeEntities: false
             });
             var wbs = [];
-            var items = $('.wgtCell');
-            var wb, item, titleEle;
+            var imgs;
+            var items = $('.media.row.toutiao');
+            var wb, item, titleEle,img;
             items.map(function (index, ele) {
                 wb = {};
                 item = $(this);
-                titleEle = item.find('.wgtCell_txt');
+                titleEle = item.find('.media-body div p a:first-of-type');
                 wb.title = titleEle.text().replace(/^\s+|\s+$/g, '');
-                if (wb.title.length > 24) {
-                    wb.title = wb.title.slice(0, 24) + '...';
-                }
-                wb.description = titleEle.html().replace(/^\s+|\s+$/g, '').replace(/thumbnail/, 'large');
-                wb.pubDate = getTime(item.find('.link_d').html());
-                wb.link = item.find('.wgtCell_tm a').attr('href');
-                wbs.push(wb);
+                wb.title = wb.title.replace(/\u0000|\u0001|\u0002|\u0003|\u0004|\u0005|\u0006|\u0007|\u0008|\u0009|\u000a|\u000b|\u000c|\u000d|\u000e|\u000f|\u0010|\u0011|\u0012|\u0013|\u0014|\u0015|\u0016|\u0017|\u0018|\u0019|\u001a|\u001b|\u001c|\u001d|\u001e|\u001f/g, '');
+                wb.pubDate = item.find('.media-body div p:first-of-type').html();
+                wb.link = item.find('.media-body div p a:first-of-type').attr('href');
+                imgs = item.find('.img-single');
+                 imgs.map(function (index,ele) {
+                     img = $(this);
+                     img = img.attr('src');//获取图片
+                     img = img.replace(/orj360/g,'large')
+                     logger.info(img);
+                     wb.img = img;
+                     wbs.push(wb);
+                 });
             });
             var name = $('.userNm').text();
 
@@ -67,7 +55,7 @@ module.exports = function (req, res) {
 <channel>
 <title>${name}的微博</title>
 <link>http://weibo.com/${uid}/</link>
-<description>${name}的微博RSS，使用 Weibo2RSS(https://github.com/DIYgod/Weibo2RSS) 构建</description>
+<description>${name}的照片RSS</description>
 <language>zh-cn</language>
 <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 <ttl>300</ttl>`
@@ -75,10 +63,9 @@ module.exports = function (req, res) {
                 rss +=`
 <item>
     <title><![CDATA[${wbs[i].title}]]></title>
-    <description><![CDATA[${wbs[i].description}]]></description>
+
     <pubDate>${wbs[i].pubDate}</pubDate>
     <guid>${wbs[i].link}</guid>
-    <link>${wbs[i].link}</link>
 </item>`
             }
             rss += `
