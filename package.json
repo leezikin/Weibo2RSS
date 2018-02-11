@@ -1,16 +1,15 @@
 {
   "name": "Weibo2RSS",
   "version": "0.0.1",
-  "description": "使用RSS订阅喜欢的微博博主，更新微博邮件提醒，并使用咕咕机打印。",
+  "description": "null",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leezikin/Weibo2RSS.git"
   },
-  "keywords": [
-    "Weibo",
-    "RSS"
-  ],
+  "scripts": {
+    "start": "node index.js"
+  },
   "author": "DIYGod",
   "license": "SATA",
   "devDependencies": {},
