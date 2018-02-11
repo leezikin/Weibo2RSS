@@ -33,8 +33,13 @@ module.exports = function (req, res) {
                 wb = {};
                 item = $(this);
                 titleEle = item.find('.media-body div p a:first-of-type');
-                wb.title = titleEle.text().replace(/^\s+|\s+$/g, '');
-                wb.title = wb.title.replace(/\u0000|\u0001|\u0002|\u0003|\u0004|\u0005|\u0006|\u0007|\u0008|\u0009|\u000a|\u000b|\u000c|\u000d|\u000e|\u000f|\u0010|\u0011|\u0012|\u0013|\u0014|\u0015|\u0016|\u0017|\u0018|\u0019|\u001a|\u001b|\u001c|\u001d|\u001e|\u001f/g, '');
+                wb.description = titleEle.text().replace(/^\s+|\s+$/g, '');
+                wb.description = wb.description.replace(/\u0000|\u0001|\u0002|\u0003|\u0004|\u0005|\u0006|\u0007|\u0008|\u0009|\u000a|\u000b|\u000c|\u000d|\u000e|\u000f|\u0010|\u0011|\u0012|\u0013|\u0014|\u0015|\u0016|\u0017|\u0018|\u0019|\u001a|\u001b|\u001c|\u001d|\u001e|\u001f/g, '');
+                wb.title = wb.description;
+                if (wb.title.length > 16) {
+                    wb.title = wb.title.slice(0, 16) + '...';
+                }
+
                 wb.pubDate = item.find('.media-body div p:first-of-type').html();
                 wb.link = item.find('.media-body div p a:first-of-type').attr('href');
               //  wb.imgs = [];
@@ -66,6 +71,7 @@ module.exports = function (req, res) {
                 rss +=`
 <item>
     <title><![CDATA[${wbs[i].title}]]></title>
+    <description><![CDATA[${wbs[i].description}]]></description>
     <image>${wbs[i].img}</image>`
 
                 // for(var j = 0;j < wbs[i].imgs.length;j++){
@@ -74,6 +80,7 @@ module.exports = function (req, res) {
 
                 rss +=`<pubDate>${wbs[i].pubDate}</pubDate>
     <guid>${wbs[i].link}</guid>
+    <link>${wbs[i].link}</link>
 </item>`
             }
             rss += `
