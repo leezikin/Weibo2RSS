@@ -1,6 +1,6 @@
 const SQL_USER = 'root';
-const SQL_PASSWORD = '';
-const EMAIL_USER = 'gx-deng@163.com';
+const SQL_PASSWORD = 'root';
+const EMAIL_USER = '';
 const EMAIL_PASSWORD = '';
 const EMAIL_HOST = 'smtp.163.com';
 
