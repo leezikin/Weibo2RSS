@@ -4,20 +4,14 @@
 
 ## Install
 
-硬件环境：RaspberryPi B+，MEMOBIRD 2
 软件环境：Nodejs，MySQL
 
 请在 `routes/config.js` 下填写您的数据库配置与邮箱配置。
 
 ## 介绍
 
-Demo：https://api.prprpr.me/weibo/rss/3306934123
-
 RSS 格式输出一个微博博主最新的 15 条微博，可以使用 RSS 阅读器来获取及时推送，配合 [IFTTT](https://ifttt.com/) 还可以实现更多好玩的功能。
 
-Demo：https://api.prprpr.me/weibo/negative/3306934123
-
-使用 [Text2Emotion](https://github.com/DIYgod/Text2Emotion) 实现，仅输出消极情绪的微博，用来监控博主的消极情绪。
 
 ## 使用
 
@@ -31,8 +25,6 @@ Demo：https://api.prprpr.me/weibo/negative/3306934123
 ## 搭建
 
 需要环境：Node.js
-
-推荐使用 Docker
 
 ## LICENSE
 
