@@ -42,12 +42,12 @@ module.exports = function (req, res) {
                      img = $(this);
                      img = img.attr('src');//获取图片
                      img = img.replace(/orj360/g,'large')
-                     logger.info(img);
+                     //logger.info(img);
                      wb.img = img;
                      wbs.push(wb);
                  });
             });
-            var name = $('.userNm').text();
+            var name = $('.username').text().slice(0,-3);
 
             var rss =
 `<?xml version="1.0" encoding="UTF-8"?>
@@ -63,7 +63,7 @@ module.exports = function (req, res) {
                 rss +=`
 <item>
     <title><![CDATA[${wbs[i].title}]]></title>
-
+    
     <pubDate>${wbs[i].pubDate}</pubDate>
     <guid>${wbs[i].link}</guid>
 </item>`
