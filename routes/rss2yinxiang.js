@@ -93,6 +93,6 @@ module.exports = function (req, res) {
             res.send(rss);
         }
     ).catch(
-        e => logger.error("Weibo2RSS Error: getting widget", e)
+        e => logger.error("Weibo2RSS Error: getting service", e)
     );
 };

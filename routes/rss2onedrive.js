@@ -51,7 +51,7 @@ module.exports = function (req, res) {
             img = img.attr('src');//获取图片
             img = img.replace(/orj360/g,'large')
             wb.img = img;
-            wb.description += '<br><img src="' + img + '"></img>';
+            wb.description = '<img src="' + img + '"></img>';
             wbs.push(wb);
             // wb.imgs.push(img);
             //logger.info(img);
