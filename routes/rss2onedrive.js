@@ -51,10 +51,11 @@ module.exports = function (req, res) {
             img = img.attr('src');//获取图片
             img = img.replace(/orj360/g,'large')
             wb.img = img;
+            wb.description += '<br><img src="' + img + '"></img>';
             wbs.push(wb);
             // wb.imgs.push(img);
             //logger.info(img);
-            //wb.description += '<br><img src="' + img + '"></img>';
+            //
         });
         //logger.info(wb.imgs.length);
         // for(var i = 0;i < wb.imgs.length;i++){
@@ -79,13 +80,9 @@ module.exports = function (req, res) {
         rss +=`
 <item>
     <title><![CDATA[${wbs[i].title}]]></title>
-    <description><![CDATA[${wbs[i].description}]]></description>`
-
-        // for(var j = 0;j < wbs[i].imgs.length;j++){
-        //     rss +=`<img>${wbs[i].imgs[j]}</img>`
-        // }
-
-        rss +=`<pubDate>${wbs[i].pubDate}</pubDate>
+    <description><![CDATA[${wbs[i].description}]]></description>
+    <image>${wbs[i].img}</image>
+    <pubDate>${wbs[i].pubDate}</pubDate>
     <guid>${wbs[i].link}</guid>
     <link>${wbs[i].link}</link>
 </item>`
@@ -96,6 +93,6 @@ module.exports = function (req, res) {
     res.send(rss);
 }
     ).catch(
-        e => logger.error("Weibo2RSS Error: getting widget", e)
+        e => logger.error("Weibo2RSS Error: getting service", e)
     );
 };
