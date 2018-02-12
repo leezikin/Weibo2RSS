@@ -1,7 +1,7 @@
 {
   "name": "Weibo2RSS",
   "version": "0.0.1",
-  "description": "null",
+  "description": "Fork from DIYGod(https://github.com/DIYgod)",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "DIYGod",
+  "author": "Leezikin",
   "license": "SATA",
   "devDependencies": {},
   "dependencies": {
