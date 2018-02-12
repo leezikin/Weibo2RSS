@@ -17,7 +17,7 @@ module.exports = function (req, res) {
 
     var uid = req.params.uid;
 
-    logger.info(`Weibo2RSS uid ${uid} form origin, IP: ${ip}`);
+    logger.info(`RSS2OneDrive uid ${uid} form origin, IP: ${ip}`);
 
     fetch(`http://www.weiboread.com/user/${uid}`).then(
         response => response.text()
@@ -44,24 +44,20 @@ module.exports = function (req, res) {
 
         wb.pubDate = item.find('.media-body div p:first-of-type').html();
         wb.link = item.find('.media-body div p a:first-of-type').attr('href');
-        // wb.imgs = [];
+        wb.imgs = [];
         imgs = item.find('.img-single');
         imgs.map(function (index,ele) {
             img = $(this);
             img = img.attr('src');//获取图片
             img = img.replace(/orj360/g,'large')
-            wb.img = img;
-            wb.description = '<img src="' + img + '"></img>';
-            wbs.push(wb);
-            // wb.imgs.push(img);
+            // wb.img = img;
+            // wb.description = '<img src="' + img + '"></img>';
+            // wbs.push(wb);
+            wb.imgs.push(img);
             //logger.info(img);
-            //
+            //logger.info(wb.description);
         });
-        //logger.info(wb.imgs.length);
-        // for(var i = 0;i < wb.imgs.length;i++){
-        //     wb.description += '<br><img src="' + wb.imgs[i] + '"></img>';
-        // }
-        //wbs.push(wb);
+        wbs.push(wb);
 
     });
     var name = $('.username').text().slice(0,-3);
@@ -72,20 +68,35 @@ module.exports = function (req, res) {
 <channel>
 <title>${name}的微博</title>
 <link>http://weibo.com/${uid}/</link>
-<description>${name}的照片RSS for OneDrive</description>
+<description>${name}的照片RSS for OneDrive(只采集有照片的微博)</description>
 <language>zh-cn</language>
 <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 <ttl>300</ttl>`
     for (var i = 0; i < wbs.length; i++) {
-        rss +=`
+        for(var j = 0;j<wbs[i].imgs.length;j++){
+            wbs[i].description = '<img src="' + wbs[i].imgs[j] + '"></img>';
+            rss +=`
 <item>
     <title><![CDATA[${wbs[i].title}]]></title>
     <description><![CDATA[${wbs[i].description}]]></description>
-    <image>${wbs[i].img}</image>
+    <image>${ wbs[i].imgs[j]}</image>
     <pubDate>${wbs[i].pubDate}</pubDate>
     <guid>${wbs[i].link}</guid>
     <link>${wbs[i].link}</link>
 </item>`
+        }
+        if(wbs[i].imgs.length == 0){
+         /*   rss +=`
+<item>
+    <title><![CDATA[${wbs[i].title}]]></title>
+    <description><![CDATA[${wbs[i].description}]]></description>
+    <pubDate>${wbs[i].pubDate}</pubDate>
+    <guid>${wbs[i].link}</guid>
+    <link>${wbs[i].link}</link>
+</item>`
+*/
+        }
+
     }
     rss += `
 </channel>
